@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: apigateway
+    
+  cloud:
+    gateway:
+      routes:
+      - id: ordermodule
+        uri: "http://localhost:6500/orders"
+        predicates:
+        - "Path=/orders/**"
+      - id: productmodule
+        uri: "http://localhost:4500/products"
+        predicates:
+        - "Path=/products/**"
+      - id: usermodule
+        uri: "http://localhost:5500/users"
+        predicates:
+        - "Path=/users/**"
+        filters:
+        - AddRequestHeader=cust-request-key, cust-request-value
+        - AddResponseHeader=cust-response-key, cust-response-value
+
+server:
+  port: 6700
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:1111/eureka/
+  instance:
+    appname: appgateway
+    #send heartbeats for every 5 seconds to eureka server
+    leaseRenewalIntervalInSeconds: 5 #not recommended in production
